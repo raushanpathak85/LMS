@@ -34,6 +34,11 @@ class UserAlreadyExists(BooklyException):
 
     pass
 
+class StudentAlreadyExists(BooklyException):
+    """User has provided an email for a user who exists during sign up."""
+
+    pass
+
 
 class InvalidCredentials(BooklyException):
     """User has provided wrong email or password during log in."""
@@ -56,6 +61,11 @@ class BookNotFound(BooklyException):
 
 
 class UserNotFound(BooklyException):
+    """User Not found"""
+
+    pass
+
+class StudentNotFound(BooklyException):
     """User Not found"""
 
     pass
@@ -94,6 +104,17 @@ def register_all_errors(app: FastAPI):
     )
 
     app.add_exception_handler(
+        StudentAlreadyExists,
+        create_exception_handler(
+            status_code=status.HTTP_403_FORBIDDEN,
+            initial_detail={
+                "message": "Student with email already exists",
+                "error_code": "student_exists",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
         UserNotFound,
         create_exception_handler(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -103,6 +124,18 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
+    app.add_exception_handler(
+        StudentNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Student not found",
+                "error_code": "student_not_found",
+            },
+        ),
+    )
+
     app.add_exception_handler(
         BookNotFound,
         create_exception_handler(
