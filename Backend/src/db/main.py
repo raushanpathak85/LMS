@@ -8,7 +8,7 @@ async_engine= AsyncEngine(create_engine(url=Config.DATABASE_URL,echo=True))
 
 async def init_db():
     async with async_engine.begin() as conn:
-         from src.db.models import Book
+         from src.db.models import Course
          await conn.run_sync(SQLModel.metadata.create_all)
 
 async def get_session() ->AsyncSession:

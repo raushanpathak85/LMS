@@ -9,7 +9,7 @@ from alembic import context
 
 ####
 from src.db.models import User
-from src.db.models import Book
+from src.db.models import Course
 from sqlmodel import SQLModel
 from src.config import Config
 

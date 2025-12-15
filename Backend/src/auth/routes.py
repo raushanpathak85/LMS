@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends,status,BackgroundTasks
-from .schemas import UserCreateModel,UserModel,UserLoginModel,UserBooksModel,EmailModel,PasswordResetRequestModel,PasswordResetConfirmModel
+from .schemas import UserCreateModel,UserModel,UserLoginModel,UserCourseModel,EmailModel,PasswordResetRequestModel,PasswordResetConfirmModel
 from .service import UserService    
 from src.db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession   
@@ -149,8 +149,8 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     raise InvalidToken()
 
 #############Current User Route #############
-@auth_router.get("/me",response_model= UserBooksModel)
-async def get_current_user(user = Depends(get_current_user),_:bool=Depends( role_checker)):
+@auth_router.get("/me")
+async def get_current_user(user = Depends(get_current_user)):
     return user
 
 ####Password Reset Request ####################

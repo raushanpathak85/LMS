@@ -4,55 +4,55 @@ from fastapi.responses import JSONResponse
 from fastapi import FastAPI, status
 from sqlalchemy.exc import SQLAlchemyError
 
-class BooklyException(Exception):
+class CourseException(Exception):
     """This is the base class for all bookly errors"""
 
     pass
 
 
-class InvalidToken(BooklyException):
+class InvalidToken(CourseException):
     """User has provided an invalid or expired token"""
 
     pass
 
 
 
-class AccessTokenRequired(BooklyException):
+class AccessTokenRequired(CourseException):
     """User has provided a refresh token when an access token is needed"""
 
     pass
 
 
-class RefreshTokenRequired(BooklyException):
+class RefreshTokenRequired(CourseException):
     """User has provided an access token when a refresh token is needed"""
 
     pass
 
 
-class UserAlreadyExists(BooklyException):
+class UserAlreadyExists(CourseException):
     """User has provided an email for a user who exists during sign up."""
 
     pass
 
-class StudentAlreadyExists(BooklyException):
+class StudentAlreadyExists(CourseException):
     """User has provided an email for a user who exists during sign up."""
 
     pass
 
 
-class InvalidCredentials(BooklyException):
+class InvalidCredentials(CourseException):
     """User has provided wrong email or password during log in."""
 
     pass
 
 
-class InsufficientPermission(BooklyException):
+class InsufficientPermission(CourseException):
     """User does not have the neccessary permissions to perform an action."""
 
     pass
 
 
-class BookNotFound(BooklyException):
+class CourseNotFound(CourseException):
     """Book Not found"""
 
     pass
@@ -60,12 +60,12 @@ class BookNotFound(BooklyException):
 
 
 
-class UserNotFound(BooklyException):
+class UserNotFound(CourseException):
     """User Not found"""
 
     pass
 
-class StudentNotFound(BooklyException):
+class StudentNotFound(CourseException):
     """User Not found"""
 
     pass
@@ -84,7 +84,7 @@ def create_exception_handler(
     status_code: int, initial_detail: Any
 ) -> Callable[[Request, Exception], JSONResponse]:
 
-    async def exception_handler(request: Request, exc: BooklyException):
+    async def exception_handler(request: Request, exc: CourseException):
 
         return JSONResponse(content=initial_detail, status_code=status_code)
 
@@ -137,16 +137,16 @@ def register_all_errors(app: FastAPI):
     )
 
     app.add_exception_handler(
-        BookNotFound,
+        CourseNotFound,
         create_exception_handler(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_404_NOT_FOUND,
             initial_detail={
-                "message": "Account Not verified",
-                "error_code": "account_not_verified",
-                "resolution": "Please check your email for verification details "
+                "message": "Course not found",
+                "error_code": "course_not_found",
             },
         ),
     )
+
 
     app.add_exception_handler(
         AccountNotVerified,
@@ -212,16 +212,6 @@ def register_all_errors(app: FastAPI):
     )
     
     
-    app.add_exception_handler(
-        BookNotFound,
-        create_exception_handler(
-            status_code=status.HTTP_404_NOT_FOUND,
-            initial_detail={
-                "message": "Book Not Found",
-                "error_code": "book_not_found",
-            },
-        ),
-    )
 
     app.add_exception_handler(
         AccountNotVerified,
